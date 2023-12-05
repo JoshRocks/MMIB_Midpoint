@@ -4,8 +4,22 @@
     "web": {
       "bundler": "metro"
     },
+    "android": {
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
+    },
+    "ios": {
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app uses your location to search midpoints."
+      }
+    },
     "plugins": [
-      "expo-router"
+      ["expo-router"],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Midpoint to use your location."
+        }
+      ]
     ],
     "name": "MMIB_Midpoint",
     "slug": "MMIB_Midpoint"
