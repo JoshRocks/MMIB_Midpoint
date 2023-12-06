@@ -51,10 +51,6 @@ const MainPage = () => {
     );
   };
 
-  /* const changeCamera = (mapViewRef) => {
-    mapViewRef?.current?.animateCamera(mapViewRef, mapCamera, 2000);
-  }; */
-
   const updateCamera = () => {
     const friend = friendById()[0];
     setMapCamera({
@@ -149,5 +145,6 @@ export default MainPage;
 /*
 
 -----------CODE DUMP------------
-
-*/
+   const changeCamera = (mapViewRef) => {
+    mapViewRef?.current?.animateCamera(mapViewRef, mapCamera, 2000);
+  }; */
