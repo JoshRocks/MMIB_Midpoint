@@ -126,7 +126,7 @@ const MainPage = () => {
           </Text>
         </TouchableOpacity>
       ) : (
-        <Text>Unable to fetch User Location</Text>
+        <Text>Unable to fetch User Location: {errorMsg}</Text>
       )}
 
       {/* <Text style={{ fontFamily: CFONT.regular }}>
