@@ -1,11 +1,16 @@
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { CCOLOR, APPNAME, CFONT, CSIZE } from "../../constants/theme";
 import HeaderBtn from "./headerbtn";
+import { Link } from "expo-router";
 
 const Header = () => {
-  const NavigateHome = () => {};
+  const NavigateHome = () => {
+    router.push("/");
+  };
 
-  const NavigateUser = () => {};
+  const NavigateUser = () => {
+    router.push("/settings");
+  };
 
   return (
     <Stack.Screen

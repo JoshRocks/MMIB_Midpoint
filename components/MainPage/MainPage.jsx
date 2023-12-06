@@ -7,14 +7,18 @@ import * as Location from "expo-location";
 import { TouchableOpacity } from "react-native";
 import calculateInitalMidPoint from "../Calculator/calculator.js";
 import MainPageStyle from "./mainpage-style.js";
+import findNearestPlace from "../../hook/fetchplace.js";
 
 const MainPage = () => {
   const [errorMsg, setErrorMsg] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([-1]);
   const [selectedId, setSelectedId] = useState(-1);
   const [friendsList, setFriendsList] = useState(data.friends);
   const [mapCamera, setMapCamera] = useState(data.defaultCamera);
   const [userLocation, setUserLocation] = useState();
   const [midPointCamera, setMidPointCamera] = useState();
+  const [placeFilter, setPlaceFilter] = useState(["point_of_interest"]);
+  const [hangoutSpots, setHangoutsSpots] = useState();
 
   //Code Referenced From:
   //https://docs.expo.dev/versions/latest/sdk/location/
@@ -45,14 +49,20 @@ const MainPage = () => {
     getUserLocationAndSetCamera();
   }, []);
 
-  const friendById = () => {
+  const getFriendById = () => {
     return friendsList.filter(
       (selectedfriend) => selectedfriend.id === selectedId
     );
   };
 
+  const getFriendsById = () => {
+    return friendsList.filter(
+      (selectedfriend) => selectedfriend.id === selectedIds
+    );
+  };
+
   const updateCamera = () => {
-    const friend = friendById()[0];
+    const friend = getFriendById()[0];
     setMapCamera({
       center: {
         longitude: friend.coords.longitude,
@@ -73,15 +83,20 @@ const MainPage = () => {
   };
 
   const setCameraToMidpoint = () => {
-    const friend = friendById()[0];
+    const friend = getFriendById()[0];
 
     var midPoint = calculateInitalMidPoint(
       {
         latitude: userLocation.center.latitude,
         longitude: userLocation.center.longitude,
       },
-      { latitude: friend.coords.latitude, longitude: friend.coords.longitude }
+      {
+        latitude: friend.coords.latitude,
+        longitude: friend.coords.longitude,
+      }
     );
+
+    //setHangoutsSpots(findNearestPlace(midPoint, placeFilter, 50));
 
     var midPointCam = {
       center: {
@@ -110,6 +125,7 @@ const MainPage = () => {
         mapCamera={mapCamera}
         friendsList={friendsList}
         midPointCam={midPointCamera}
+        hangoutSpots={hangoutSpots}
       />
 
       {userLocation ? (
@@ -124,6 +140,8 @@ const MainPage = () => {
       ) : (
         <Text>Unable to fetch User Location: {errorMsg}</Text>
       )}
+
+      {}
 
       {/* <Text style={{ fontFamily: CFONT.regular }}>
         {selectedId} {selectedId != null ? friendById()[0].name : null} {"\n"}

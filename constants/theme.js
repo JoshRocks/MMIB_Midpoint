@@ -9,6 +9,7 @@ const CCOLOR = {
   softBlack: "#171613",
   friendPinGreen: "#20bd4a",
   midpointPinBlue: "#05e4fc",
+  hangoutPinPink: "#ed0547",
 };
 
 const CFONT = {

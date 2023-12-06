@@ -16,7 +16,8 @@ const CardList = ({ friendsList, selectedId, updateID }) => {
             functionality={() => {
               updateID(item.id);
             }}
-            isSelected={item.id === selectedId}
+            isSelected={selectedId === item.id}
+            /* isSelected={selectedIds.indexOf(item.id) !== -1} */
           />
         ))}
       </ScrollView>
