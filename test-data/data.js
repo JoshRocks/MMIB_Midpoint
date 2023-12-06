@@ -4,7 +4,7 @@ const data = {
   friends: [
     {
       id: -1,
-      name: "default",
+      name: "Cleveland State",
       coords: {
         latitude: CGPS.defaultLatitude,
         longitude: CGPS.defaultLongitude,

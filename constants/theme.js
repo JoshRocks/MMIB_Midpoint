@@ -7,6 +7,8 @@ const CCOLOR = {
 
   pureWhite: "#fcfcfc",
   softBlack: "#171613",
+  friendPinGreen: "#20bd4a",
+  midpointPinBlue: "#05e4fc",
 };
 
 const CFONT = {
