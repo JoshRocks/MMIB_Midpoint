@@ -96,7 +96,7 @@ const MainPage = () => {
       }
     );
 
-    //setHangoutsSpots(findNearestPlace(midPoint, placeFilter, 50));
+    setHangoutsSpots(findNearestPlace(midPoint, placeFilter, 50));
 
     var midPointCam = {
       center: {

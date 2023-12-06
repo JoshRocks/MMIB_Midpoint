@@ -25,4 +25,6 @@ function findNearestPlace(location, placeType, searchRadius) {
   }
 }
 
+//Increase radius based on inital distance
+
 export default findNearestPlace;
