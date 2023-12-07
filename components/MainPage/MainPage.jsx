@@ -73,7 +73,7 @@ const MainPage = () => {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": ApiKey,
         "X-Goog-FieldMask":
-          "places.displayName,places.formattedAddress,places.types,places.websiteUri,places.location,places.rating",
+          "places.displayName,places.formattedAddress,places.types,places.websiteUri,places.location,places.rating,places.id",
       },
     };
     setIsLoading(true);

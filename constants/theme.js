@@ -2,7 +2,7 @@ const APPNAME = "MIDPOINT";
 
 const CCOLOR = {
   bgWhite: "#f2f2f0",
-  sbGray: "#a1a1a1",
+  sbGray: "#d4d0cf",
   pureBlack: "#030302",
 
   pureWhite: "#fcfcfc",
@@ -12,6 +12,7 @@ const CCOLOR = {
   hangoutPinPink: "#ed0547",
 
   ratingStarYellow: "#fada0a",
+  websiteLinkBlue: "#3b88f5"
 };
 
 const CFONT = {

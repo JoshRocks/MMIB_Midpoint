@@ -3,7 +3,7 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Text } from "react-native";
 import FcardStyle from "./Fcard-style";
-import { CCOLOR } from "../../constants/theme";
+import { CCOLOR, CSHADOW } from "../../constants/theme";
 
 const FriendCard = ({ item, functionality, isSelected }) => {
   if (item.id < 0) {
@@ -14,7 +14,7 @@ const FriendCard = ({ item, functionality, isSelected }) => {
   return (
     <TouchableOpacity
       onPress={functionality}
-      style={isSelected ? FcardStyle.card_selected : FcardStyle.card_unselected}
+      style={[isSelected ? FcardStyle.card_selected : FcardStyle.card_unselected, CSHADOW.small]}
     >
       <FontAwesomeIcon
         icon={solid("user")}
