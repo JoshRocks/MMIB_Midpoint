@@ -7,25 +7,124 @@ import * as Location from "expo-location";
 import { TouchableOpacity } from "react-native";
 import calculateInitalMidPoint from "../Calculator/calculator.js";
 import MainPageStyle from "./mainpage-style.js";
-import findNearestPlace from "../../hook/fetchplace.js";
+import axios from "axios";
 
 const MainPage = () => {
-  const [errorMsg, setErrorMsg] = useState(null);
+  //////////People////////////
   const [selectedIds, setSelectedIds] = useState([-1]);
   const [selectedId, setSelectedId] = useState(-1);
   const [friendsList, setFriendsList] = useState(data.friends);
+
+  const updateID = (cardID) => {
+    setSelectedId(cardID);
+  };
+  ///////////////////////////
+
+  const getFriendById = () => {
+    return friendsList.filter(
+      (selectedfriend) => selectedfriend.id === selectedId
+    );
+  };
+
+  const getFriendsById = () => {
+    return friendsList.filter(
+      (selectedfriend) => selectedfriend.id === selectedIds
+    );
+  };
+
+  //////////Search-Query/////////////////////////////////////
+  const ApiUrl = process.env.API_URL;
+  const ApiKey = process.env.API_KEY;
+
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState();
+  const [placeFilter, setPlaceFilter] = useState(["point_of_interest"]);
+  const [hangoutSpots, setHangoutsSpots] = useState();
+  const [query, setQuery] = useState({
+    includedTypes: ["point_of_interest"],
+    maxResultCount: 10,
+    locationRestriction: {
+      circle: {
+        center: {
+          latitude: getFriendById()[0].coords.latitude,
+          longitude: getFriendById()[0].coords.longitude,
+        },
+        radius: 50,
+      },
+    },
+  });
+  const [fetchedData, setFetchedData] = useState();
+
+  const fetchdata = async (Cquery) => {
+    var toBeUsedQuery = {};
+    if (Cquery) {
+      toBeUsedQuery = Cquery;
+    } else {
+      toBeUsedQuery = query;
+    }
+    const options = {
+      method: "POST",
+      url: ApiUrl,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": ApiKey,
+        "X-Goog-FieldMask":
+          "places.displayName,places.formattedAddress,places.types,places.websiteUri,places.location",
+      },
+      params: { toBeUsedQuery },
+    };
+    setIsLoading(true);
+
+    try {
+      const response = await axios.request(options);
+      setFetchedData(response);
+      setIsLoading(false);
+    } catch (error) {
+      setError(error);
+      alert("There was a fetch Error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const refetch = () => {
+    setIsLoading(true);
+    fetchdata();
+  };
+
+  function prepQuery(location, placeType, searchRadius) {
+    var query = {
+      includedTypes: placeType,
+      maxResultCount: 10,
+      locationRestriction: {
+        circle: {
+          center: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          },
+          radius: searchRadius,
+        },
+      },
+    };
+
+    setQuery(query);
+    return query;
+  }
+
+  //////////////////////////////////////////////////////
+
+  ////////Cameras-Locations//////////
   const [mapCamera, setMapCamera] = useState(data.defaultCamera);
   const [userLocation, setUserLocation] = useState();
   const [midPointCamera, setMidPointCamera] = useState();
-  const [placeFilter, setPlaceFilter] = useState(["point_of_interest"]);
-  const [hangoutSpots, setHangoutsSpots] = useState();
+  const [permissionError, setPermissionError] = useState();
 
   //Code Referenced From:
   //https://docs.expo.dev/versions/latest/sdk/location/
   getUserLocationAndSetCamera = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
-      setErrorMsg("Permission to access location was denied");
+      setPermissionError("Permission to access location was denied");
       return;
     }
 
@@ -44,22 +143,11 @@ const MainPage = () => {
     setUserLocation(userCamera);
     setMapCamera(userCamera);
   };
+  /////////////////////////////////////
 
   useEffect(() => {
     getUserLocationAndSetCamera();
   }, []);
-
-  const getFriendById = () => {
-    return friendsList.filter(
-      (selectedfriend) => selectedfriend.id === selectedId
-    );
-  };
-
-  const getFriendsById = () => {
-    return friendsList.filter(
-      (selectedfriend) => selectedfriend.id === selectedIds
-    );
-  };
 
   const updateCamera = () => {
     const friend = getFriendById()[0];
@@ -78,11 +166,7 @@ const MainPage = () => {
     updateCamera();
   }, [selectedId]);
 
-  const updateID = (cardID) => {
-    setSelectedId(cardID);
-  };
-
-  const setCameraToMidpoint = () => {
+  const setCameraToMidpoint = async () => {
     const friend = getFriendById()[0];
 
     var midPoint = calculateInitalMidPoint(
@@ -95,8 +179,31 @@ const MainPage = () => {
         longitude: friend.coords.longitude,
       }
     );
+    const query = prepQuery(midPoint, placeFilter, 50);
 
-    setHangoutsSpots(findNearestPlace(midPoint, placeFilter, 50));
+    try {
+      await fetchdata(query).then(() => {
+        setHangoutsSpots(fetchedData);
+      });
+    } catch (error) {
+      console.error("Error fetching hangout spots: ", error);
+    }
+
+    var midPointCam = {
+      center: {
+        latitude: midPoint.latitude,
+        longitude: midPoint.longitude,
+      },
+      pitch: mapCamera.pitch,
+      zoom: mapCamera.zoom,
+      heading: mapCamera.heading,
+    };
+
+    setMidPointCamera(midPointCam);
+
+    setMapCamera(midPointCam);
+
+    //setHangoutsSpots(findNearestPlace(midPoint, placeFilter, 50));
 
     var midPointCam = {
       center: {
@@ -138,10 +245,19 @@ const MainPage = () => {
           </Text>
         </TouchableOpacity>
       ) : (
-        <Text>Unable to fetch User Location: {errorMsg}</Text>
+        <Text>Unable to fetch User Location: {permissionError}</Text>
       )}
 
-      {}
+      {fetchedData ? (
+        fetchedData.map((place) => (
+          <Text>
+            {"\n"}
+            {place.displayName}
+          </Text>
+        ))
+      ) : error ? (
+        <Text>{JSON.stringify(error)}</Text>
+      ) : null}
 
       {/* <Text style={{ fontFamily: CFONT.regular }}>
         {selectedId} {selectedId != null ? friendById()[0].name : null} {"\n"}

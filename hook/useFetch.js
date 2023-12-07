@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const useFetch = (query) => {
+const handleFetch = (query) => {
   const ApiUrl = process.env.API_URL;
   const ApiKey = process.env.API_KEY;
 
-  const [data, setData] = useState(false);
+  const [fetchedData, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -45,7 +45,7 @@ const useFetch = (query) => {
     fetchdata();
   };
 
-  return { data, isLoading, error, refetch };
+  return { fetchedData, isLoading, error, refetch };
 };
 
-export default useFetch;
+export default handleFetch;

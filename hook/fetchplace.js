@@ -1,30 +1,47 @@
-import useFetch from "./useFetch";
+import { useEffect, useState } from "react";
 
-function findNearestPlace(location, placeType, searchRadius) {
-  var query = {
-    includedTypes: placeType,
-    maxResultCount: 10,
-    locationRestriction: {
-      circle: {
-        center: {
-          latitude: location.latitude,
-          longitude: location.longitude,
-        },
-        radius: searchRadius,
-      },
-    },
-  };
+function FindNearestPlace({ location }) {
+  const [nearestPlace, setNearestPlace] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  var results = useFetch(query);
+  useEffect(() => {
+    const request = {
+      location: location,
+      radius: 10000,
+      types: ["city", "tourist_attraction"],
+    };
 
-  if (results.error) {
-    return results.error;
-  } else {
-    const places = results.places;
-    return { places };
-  }
+    const placesService = new window.google.maps.places.PlacesService(
+      document.createElement("div")
+    );
+
+    placesService.nearbySearch(request, function (results, status) {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        if (results.length > 0) {
+          const nearestPlace = results[0];
+          setNearestPlace(nearestPlace);
+        } else {
+          setNearestPlace(null);
+        }
+      } else {
+        console.error("Error finding nearby places:", status);
+        setNearestPlace(null);
+      }
+      setLoading(false);
+    });
+  }, [location]);
+
+  return (
+    <div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : nearestPlace ? (
+        <p>Nearest Place: {nearestPlace.name}</p>
+      ) : (
+        <p>No nearby places found.</p>
+      )}
+    </div>
+  );
 }
 
-//Increase radius based on inital distance
-
-export default findNearestPlace;
+export default FindNearestPlace;
