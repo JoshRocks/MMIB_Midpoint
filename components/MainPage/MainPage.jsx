@@ -43,7 +43,7 @@ const MainPage = () => {
   const [hangoutSpots, setHangoutsSpots] = useState();
   const [query, setQuery] = useState({
     includedTypes: ["restaurant"],
-    rankPreference: "DISTANCE",
+    rankPreference: "POPULARITY",
     maxResultCount: 10,
     locationRestriction: {
       circle: {
@@ -98,7 +98,7 @@ const MainPage = () => {
   function prepQuery(location, placeType, searchRadius) {
     var query = {
       includedTypes: placeType,
-      rankPreference: "DISTANCE",
+      rankPreference: "POPULARITY",
       maxResultCount: 10,
       locationRestriction: {
         circle: {
@@ -167,9 +167,42 @@ const MainPage = () => {
     });
   };
 
+  function adjustZoom() {
+    var distanceToFarthestLocation = 0;
+    fetchedData.data.places.forEach((place) => {
+      var LatDiff = Math.abs(
+        place.location.latitude - midPointCamera.center.latitude
+      );
+      var LongDiff = Math.abs(
+        place.location.longitude - midPointCamera.center.longitude
+      );
+      var AddedDiff = LatDiff + LongDiff;
+      if (AddedDiff > distanceToFarthestLocation) {
+        distanceToFarthestLocation = AddedDiff;
+      }
+    });
+    const newZoom =
+      data.defaultCamera.zoom * (distanceToFarthestLocation * 1.25);
+    console.log(newZoom);
+    setMapCamera({
+      center: {
+        latitude: mapCamera.latitude,
+        longitude: mapCamera.longitude,
+      },
+      pitch: mapCamera.pitch,
+      heading: mapCamera.heading,
+      zoom: newZoom,
+    });
+  }
+
+  //Should Only Trigger Post-"setCameraToMidpoint"
+  //Functionality: Update HangoutSpots with new data and Zoom camera out to encompass farthest location.
   useEffect(() => {
     setHangoutsSpots(fetchedData ? fetchedData.data.places : null);
-  }, [fetchedData]);
+
+    //console.log(midPointCamera);
+    //midPointCamera && fetchedData.data.places[0] ? adjustZoom() : null;
+  }, [midPointCamera]);
 
   useEffect(() => {
     updateCamera();
@@ -205,25 +238,7 @@ const MainPage = () => {
       zoom: mapCamera.zoom,
       heading: mapCamera.heading,
     };
-
     setMidPointCamera(midPointCam);
-
-    setMapCamera(midPointCam);
-
-    //setHangoutsSpots(findNearestPlace(midPoint, placeFilter, 50));
-
-    var midPointCam = {
-      center: {
-        latitude: midPoint.latitude,
-        longitude: midPoint.longitude,
-      },
-      pitch: mapCamera.pitch,
-      zoom: mapCamera.zoom,
-      heading: mapCamera.heading,
-    };
-
-    setMidPointCamera(midPointCam);
-
     setMapCamera(midPointCam);
   };
 
@@ -250,7 +265,9 @@ const MainPage = () => {
       {userLocation ? (
         <TouchableOpacity
           style={MainPageStyle.MidpointBtn}
-          onPress={setCameraToMidpoint}
+          onPress={async () => {
+            await setCameraToMidpoint().then();
+          }}
         >
           <Text style={MainPageStyle.MidpointBtnText}>
             Find Midpoint From Current Location
