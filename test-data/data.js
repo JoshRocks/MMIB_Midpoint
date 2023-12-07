@@ -82,7 +82,7 @@ const data = {
     },
     pitch: 10,
     heading: 0,
-    zoom: 13,
+    zoom: 8,
   },
 };
 export default data;

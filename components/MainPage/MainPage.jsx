@@ -9,6 +9,7 @@ import calculateInitalMidPoint from "../Calculator/calculator.js";
 import MainPageStyle from "./mainpage-style.js";
 import axios from "axios";
 import { ScrollView } from "react-native";
+import LocationList from "../Cards/LocationList.jsx";
 
 const MainPage = () => {
   //////////People////////////
@@ -72,7 +73,7 @@ const MainPage = () => {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": ApiKey,
         "X-Goog-FieldMask":
-          "places.displayName,places.formattedAddress,places.types,places.websiteUri,places.location",
+          "places.displayName,places.formattedAddress,places.types,places.websiteUri,places.location,places.rating",
       },
     };
     setIsLoading(true);
@@ -274,8 +275,11 @@ const MainPage = () => {
           </Text>
         </TouchableOpacity>
       ) : (
-        <Text>Unable to fetch User Location: {permissionError}</Text>
+        <Text>Fetching User Location... {permissionError}</Text>
       )}
+
+      {hangoutSpots ? console.log(hangoutSpots) : null}
+      {hangoutSpots ? <LocationList places={hangoutSpots} /> : null}
 
       {/* {fetchedData ? (
         fetchedData.map((place) => (
@@ -287,9 +291,9 @@ const MainPage = () => {
       ) : error ? (
         <Text>{JSON.stringify(error)}</Text>
       ) : null} */}
-      <View>
+      {/* <View>
         <Text>{JSON.stringify(fetchedData)}</Text>
-      </View>
+      </View> */}
 
       {/* <Text style={{ fontFamily: CFONT.regular }}>
         {selectedId} {selectedId != null ? friendById()[0].name : null} {"\n"}

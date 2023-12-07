@@ -10,6 +10,8 @@ const CCOLOR = {
   friendPinGreen: "#20bd4a",
   midpointPinBlue: "#05e4fc",
   hangoutPinPink: "#ed0547",
+
+  ratingStarYellow: "#fada0a",
 };
 
 const CFONT = {
