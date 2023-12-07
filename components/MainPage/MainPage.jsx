@@ -33,8 +33,8 @@ const MainPage = () => {
   };
 
   //////////Search-Query/////////////////////////////////////
-  const ApiUrl = process.env.API_URL;
-  const ApiKey = process.env.API_KEY;
+  const ApiUrl = process.env.EXPO_PUBLIC_API_URL;
+  const ApiKey = process.env.EXPO_PUBLIC_API_KEY;
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState();
@@ -49,7 +49,7 @@ const MainPage = () => {
           latitude: getFriendById()[0].coords.latitude,
           longitude: getFriendById()[0].coords.longitude,
         },
-        radius: 50,
+        radius: 500,
       },
     },
   });
@@ -65,7 +65,19 @@ const MainPage = () => {
     const options = {
       method: "POST",
       url: ApiUrl,
-      data: { toBeUsedQuery },
+      data: {
+        includedTypes: ["point_of_interest"],
+        maxResultCount: 12,
+        locationRestriction: {
+          circle: {
+            center: {
+              latitude: 37.7937,
+              longitude: -122.3965,
+            },
+            radius: 500,
+          },
+        },
+      },
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": ApiKey,
@@ -76,12 +88,12 @@ const MainPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(options);
+      const response = await axios.request(options);
       setFetchedData(response);
       setIsLoading(false);
     } catch (error) {
       setError(error);
-      alert("There was a fetch Error");
+      alert("There was a fetch Error" + error);
     } finally {
       setIsLoading(false);
     }
@@ -130,7 +142,6 @@ const MainPage = () => {
 
     let location = await Location.getCurrentPositionAsync({});
 
-    //UserLocation is set a Camera Object
     var userCamera = {
       center: {
         longitude: location.coords.longitude,
@@ -140,6 +151,8 @@ const MainPage = () => {
       zoom: data.defaultCamera.zoom,
       heading: data.defaultCamera.heading,
     };
+
+    //UserLocation is set a Camera Object
     setUserLocation(userCamera);
     setMapCamera(userCamera);
   };
