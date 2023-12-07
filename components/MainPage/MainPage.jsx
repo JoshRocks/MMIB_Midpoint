@@ -10,6 +10,7 @@ import MainPageStyle from "./mainpage-style.js";
 import axios from "axios";
 import { ScrollView } from "react-native";
 import LocationList from "../Cards/LocationList.jsx";
+import FilterCardList from "../Cards/FilterCardList.jsx";
 
 const MainPage = () => {
   //////////People////////////
@@ -40,6 +41,7 @@ const MainPage = () => {
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState();
+  const [allFilters, setallFilters] = useState(["restaurant", "bakery", "amusement_park"])
   const [placeFilter, setPlaceFilter] = useState(["restaurant"]);
   const [hangoutSpots, setHangoutsSpots] = useState();
   const [query, setQuery] = useState({
@@ -209,6 +211,10 @@ const MainPage = () => {
     updateCamera();
   }, [selectedId]);
 
+  /* useEffect(async () => {
+    await setCameraToMidpoint
+  }, [placeFilter]) */
+
   const setCameraToMidpoint = async () => {
     const friend = getFriendById()[0];
 
@@ -278,10 +284,25 @@ const MainPage = () => {
         <Text>Fetching User Location... {permissionError}</Text>
       )}
 
-      {hangoutSpots ? console.log(hangoutSpots) : null}
+      {/* {placeFilter ? <FilterCardList filtersList={allFilters} selectFilter={setPlaceFilter} />: null} */}
+
+
       {hangoutSpots ? <LocationList places={hangoutSpots} /> : null}
 
-      {/* {fetchedData ? (
+      
+    </ScrollView>
+  );
+};
+export default MainPage;
+
+/*
+
+-----------CODE DUMP------------
+   const changeCamera = (mapViewRef) => {
+    mapViewRef?.current?.animateCamera(mapViewRef, mapCamera, 2000);
+  }; */
+
+  {/* {fetchedData ? (
         fetchedData.map((place) => (
           <Text>
             {"\n"}
@@ -307,14 +328,3 @@ const MainPage = () => {
           : " Error -- " + errorMsg}
         {"\n"}
       </Text> */}
-    </ScrollView>
-  );
-};
-export default MainPage;
-
-/*
-
------------CODE DUMP------------
-   const changeCamera = (mapViewRef) => {
-    mapViewRef?.current?.animateCamera(mapViewRef, mapCamera, 2000);
-  }; */

@@ -26,9 +26,9 @@ const LocationCard = ({place, functionality}) => {
         </Text>
 
         
-        <Link style={LocationStyle.LocationLinkText} href={place.websiteUri}>
+        {place.websiteUri ? <Link style={LocationStyle.LocationLinkText} href={place.websiteUri}>
           Visit Their Website
-        </Link>
+        </Link> : <Text style={{color: CCOLOR.noWebsiteRed}}>No Website Available</Text>}
         <View style={LocationStyle.LocationRatingContainer}>
           {[stars]}
          <Text> {place.rating} </Text>

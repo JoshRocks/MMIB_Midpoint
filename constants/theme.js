@@ -12,7 +12,8 @@ const CCOLOR = {
   hangoutPinPink: "#ed0547",
 
   ratingStarYellow: "#fada0a",
-  websiteLinkBlue: "#3b88f5"
+  websiteLinkBlue: "#3b88f5",
+  noWebsiteRed: "#f01f1f",
 };
 
 const CFONT = {

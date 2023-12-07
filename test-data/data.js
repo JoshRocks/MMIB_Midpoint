@@ -17,8 +17,8 @@ const data = {
       id: 0,
       name: "Michael",
       coords: {
-        latitude: 48.137154,
-        longitude: 11.576124,
+        latitude: 29.643946, 
+        longitude: -82.355659,
         latitudeDelta: CGPS.defaultLatDelta,
         longitudeDelta: CGPS.defaultLongDelta,
       },
@@ -37,8 +37,8 @@ const data = {
       id: 2,
       name: "Frank",
       coords: {
-        latitude: 22.283832198,
-        longitude: 114.135999456,
+        latitude: 35.975266	,
+        longitude: -78.899734,
         latitudeDelta: CGPS.defaultLatDelta,
         longitudeDelta: CGPS.defaultLongDelta,
       },
@@ -57,8 +57,8 @@ const data = {
       id: 4,
       name: "Tommy",
       coords: {
-        latitude: 36.7525,
-        longitude: 3.04197,
+        latitude: 43.603600,
+        longitude: -116.208710,
         latitudeDelta: CGPS.defaultLatDelta,
         longitudeDelta: CGPS.defaultLongDelta,
       },
@@ -67,8 +67,8 @@ const data = {
       id: 5,
       name: "Christina",
       coords: {
-        latitude: -1.280423,
-        longitude: 36.816311,
+        latitude: 33.227345,	
+        longitude: -97.128113,
         latitudeDelta: CGPS.defaultLatDelta,
         longitudeDelta: CGPS.defaultLongDelta,
       },
