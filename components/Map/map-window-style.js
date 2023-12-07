@@ -12,7 +12,7 @@ const MapWStyle = StyleSheet.create({
     marginRight: "11%",
     padding: 0,
     width: "80%",
-    height: "50%",
+    height: 300,
   },
 });
 

@@ -2,8 +2,11 @@ import { StyleSheet } from "react-native";
 import { CCOLOR, CRADIUS } from "../../constants/theme";
 
 const MainPageStyle = StyleSheet.create({
-  container: {
-    alignItems: "center",
+  container: {},
+
+  mapWindow: {
+    height: 400,
+    width: "100%",
   },
 
   MidpointBtn: {

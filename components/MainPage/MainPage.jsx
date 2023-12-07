@@ -8,6 +8,7 @@ import { TouchableOpacity } from "react-native";
 import calculateInitalMidPoint from "../Calculator/calculator.js";
 import MainPageStyle from "./mainpage-style.js";
 import axios from "axios";
+import { ScrollView } from "react-native";
 
 const MainPage = () => {
   //////////People////////////
@@ -42,6 +43,7 @@ const MainPage = () => {
   const [hangoutSpots, setHangoutsSpots] = useState();
   const [query, setQuery] = useState({
     includedTypes: ["restaurant"],
+    rankPreference: "DISTANCE",
     maxResultCount: 10,
     locationRestriction: {
       circle: {
@@ -49,11 +51,11 @@ const MainPage = () => {
           latitude: getFriendById()[0].coords.latitude,
           longitude: getFriendById()[0].coords.longitude,
         },
-        radius: 500,
+        radius: 50000,
       },
     },
   });
-  const [fetchedData, setFetchedData] = useState();
+  const [fetchedData, setFetchedData] = useState(null);
 
   const fetchdata = async (Cquery) => {
     var toBeUsedQuery = {};
@@ -79,9 +81,10 @@ const MainPage = () => {
       const response = await axios.request(options);
       setFetchedData(response);
       setIsLoading(false);
+      return response;
     } catch (error) {
       setError(error);
-      alert("There was a fetch Error" + error);
+      alert("There was a fetch Error: \n" + error);
     } finally {
       setIsLoading(false);
     }
@@ -95,6 +98,7 @@ const MainPage = () => {
   function prepQuery(location, placeType, searchRadius) {
     var query = {
       includedTypes: placeType,
+      rankPreference: "DISTANCE",
       maxResultCount: 10,
       locationRestriction: {
         circle: {
@@ -164,6 +168,10 @@ const MainPage = () => {
   };
 
   useEffect(() => {
+    setHangoutsSpots(fetchedData ? fetchedData.data.places : null);
+  }, [fetchedData]);
+
+  useEffect(() => {
     updateCamera();
   }, [selectedId]);
 
@@ -180,12 +188,10 @@ const MainPage = () => {
         longitude: friend.coords.longitude,
       }
     );
-    const query = prepQuery(midPoint, placeFilter, 50);
+    const query = prepQuery(midPoint, placeFilter, 50000);
 
     try {
-      await fetchdata(query).then(() => {
-        setHangoutsSpots(fetchedData);
-      });
+      await fetchdata(query).then(() => {});
     } catch (error) {
       console.error("Error fetching hangout spots: ", error);
     }
@@ -222,7 +228,11 @@ const MainPage = () => {
   };
 
   return (
-    <View style={MainPageStyle.container}>
+    <ScrollView
+      style={MainPageStyle.container}
+      showsVerticalScrollIndicator
+      centerContent
+    >
       <CardList
         friendsList={friendsList}
         selectedId={selectedId}
@@ -234,6 +244,7 @@ const MainPage = () => {
         friendsList={friendsList}
         midPointCam={midPointCamera}
         hangoutSpots={hangoutSpots}
+        style={MainPageStyle.mapWindow}
       />
 
       {userLocation ? (
@@ -249,7 +260,7 @@ const MainPage = () => {
         <Text>Unable to fetch User Location: {permissionError}</Text>
       )}
 
-      {fetchedData ? (
+      {/* {fetchedData ? (
         fetchedData.map((place) => (
           <Text>
             {"\n"}
@@ -258,7 +269,10 @@ const MainPage = () => {
         ))
       ) : error ? (
         <Text>{JSON.stringify(error)}</Text>
-      ) : null}
+      ) : null} */}
+      <View>
+        <Text>{JSON.stringify(fetchedData)}</Text>
+      </View>
 
       {/* <Text style={{ fontFamily: CFONT.regular }}>
         {selectedId} {selectedId != null ? friendById()[0].name : null} {"\n"}
@@ -272,7 +286,7 @@ const MainPage = () => {
           : " Error -- " + errorMsg}
         {"\n"}
       </Text> */}
-    </View>
+    </ScrollView>
   );
 };
 export default MainPage;
