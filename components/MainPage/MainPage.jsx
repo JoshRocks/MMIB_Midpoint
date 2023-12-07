@@ -38,10 +38,10 @@ const MainPage = () => {
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState();
-  const [placeFilter, setPlaceFilter] = useState(["point_of_interest"]);
+  const [placeFilter, setPlaceFilter] = useState(["restaurant"]);
   const [hangoutSpots, setHangoutsSpots] = useState();
   const [query, setQuery] = useState({
-    includedTypes: ["point_of_interest"],
+    includedTypes: ["restaurant"],
     maxResultCount: 10,
     locationRestriction: {
       circle: {
@@ -65,19 +65,7 @@ const MainPage = () => {
     const options = {
       method: "POST",
       url: ApiUrl,
-      data: {
-        includedTypes: ["point_of_interest"],
-        maxResultCount: 12,
-        locationRestriction: {
-          circle: {
-            center: {
-              latitude: 37.7937,
-              longitude: -122.3965,
-            },
-            radius: 500,
-          },
-        },
-      },
+      data: toBeUsedQuery,
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": ApiKey,
