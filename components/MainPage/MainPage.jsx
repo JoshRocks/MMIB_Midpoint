@@ -65,18 +65,18 @@ const MainPage = () => {
     const options = {
       method: "POST",
       url: ApiUrl,
+      data: { toBeUsedQuery },
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": ApiKey,
         "X-Goog-FieldMask":
           "places.displayName,places.formattedAddress,places.types,places.websiteUri,places.location",
       },
-      params: { toBeUsedQuery },
     };
     setIsLoading(true);
 
     try {
-      const response = await axios.request(options);
+      const response = await axios.post(options);
       setFetchedData(response);
       setIsLoading(false);
     } catch (error) {
